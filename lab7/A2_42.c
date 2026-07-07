@@ -7,28 +7,67 @@ struct node
     struct node *link;
 };
 
-struct node *first = NULL; // Golobal variable
+struct node *first = NULL;
 
-void creatNode()
+struct node *createNode()
 {
-    struct node *new, *temp;
+    struct node *newnode;
+    int x;
+
+    newnode = (struct node *)malloc(sizeof(struct node));
+
+    if (newnode == NULL)
+    {
+        printf("Memory not allocated");
+        exit(0);
+    }
+
+    printf("Enter info : ");
+    scanf("%d", &x);
+
+    newnode->info = x;
+    newnode->link = NULL;
+
+    return newnode;
+}
+
+void display()
+{
+    struct node *temp = first;
+
+    if (temp == NULL)
+    {
+        printf("List is Empty");
+        return;
+    }
+
+    printf("Linked List : ");
+
+    while (temp != NULL)
+    {
+        printf("%d -> ", temp->info);
+        temp = temp->link;
+    }
+
+    printf("NULL");
+}
+
+/* -------- CREATE LIST -------- */
+void createList()
+{
     int n, i;
+    struct node *newnode, *temp;
 
     printf("Enter number of nodes : ");
     scanf("%d", &n);
 
     for (i = 1; i <= n; i++)
     {
-        new = (struct node *)malloc(sizeof(struct node));
-
-        printf("Enter info : ");
-        scanf("%d", &new->info);
-
-        new->link = NULL;
+        newnode = createNode();
 
         if (first == NULL)
         {
-            first = new;
+            first = newnode;
         }
         else
         {
@@ -39,220 +78,148 @@ void creatNode()
                 temp = temp->link;
             }
 
-            temp->link = new;
+            temp->link = newnode;
         }
     }
+
+    display();
 }
 
-void display()
+/* -------- INSERT FIRST -------- */
+void insertFirst()
 {
+    struct node *newnode = createNode();
+
+    newnode->link = first;
+    first = newnode;
+
+    display();
+}
+
+/* -------- INSERT LAST -------- */
+void insertLast()
+{
+    struct node *newnode = createNode();
     struct node *temp;
 
     if (first == NULL)
     {
-        printf("Linked List is Empty.\n");
-        return;
+        first = newnode;
     }
-
-    temp = first;
-
-    printf("\nLinked List : ");
-
-    while (temp != NULL)
+    else
     {
-        printf("%d -> ", temp->info);
-        temp = temp->link;
+        temp = first;
+
+        while (temp->link != NULL)
+        {
+            temp = temp->link;
+        }
+
+        temp->link = newnode;
     }
 
-    printf("NULL\n");
+    display();
 }
 
-void insertAtFriest()
-{
-    struct node *new;
-    int x;
-
-    new = (struct node *)malloc(sizeof(struct node));
-
-    printf("Enter X : ");
-    scanf("%d", &x);
-
-    new->info = x;
-
-    new->link = first;
-
-    first = new;
-
-    temp = first;
-    while (temp != NULL)
-    {
-        printf("%d -> ", temp->info);
-        temp = temp->link;
-    }
-
-    printf("NULL");
-}
-
+/* -------- DELETE FIRST -------- */
 void deleteFirst()
 {
     struct node *temp;
 
     if (first == NULL)
     {
-        printf("Linked List is Empty.");
-    }
-    else
-    {
-        temp = first;
-        first = first->link;
-        free(temp);
-
-        printf("First Node Deleted.");
+        printf("List is Empty");
+        return;
     }
 
     temp = first;
-    while (temp != NULL)
-    {
-        printf("%d -> ", temp->info);
-        temp = temp->link;
-    }
+    first = first->link;
+    free(temp);
 
-    printf("NULL");
-}
-void insertAtLast()
-{
-    struct node *new, *temp;
-    int x;
-
-    new = (struct node *)malloc(sizeof(struct node));
-
-    printf("Enter X : ");
-    scanf("%d", &x);
-
-    new->info = x;
-    new->link = NULL;
-
-    if (first == NULL)
-    {
-        first = new;
-    }
-    else
-    {
-        temp = first;
-
-        while (temp->link != NULL)
-        {
-            temp = temp->link;
-        }
-
-        temp->link = new;
-    }
-
-    temp = first;
-    while (temp != NULL)
-    {
-        printf("%d -> ", temp->info);
-        temp = temp->link;
-    }
-
-    printf("NULL");
+    display();
 }
 
+/* -------- DELETE LAST -------- */
 void deleteLast()
 {
     struct node *temp, *prev;
 
     if (first == NULL)
     {
-        printf("Linked List is Empty.\n");
+        printf("List is Empty");
+        return;
     }
-    else if (first->link == NULL)
+
+    if (first->link == NULL)
     {
         free(first);
         first = NULL;
-
-        printf("Last Node Deleted.");
-    }
-    else
-    {
-        temp = first;
-
-        while (temp->link != NULL)
-        {
-            prev = temp;
-            temp = temp->link;
-        }
-
-        prev->link = NULL;
-        free(temp);
-
-        printf("Last Node Deleted.");
+        display();
+        return;
     }
 
     temp = first;
-    while (temp != NULL)
+
+    while (temp->link != NULL)
     {
-        printf("%d -> ", temp->info);
+        prev = temp;
         temp = temp->link;
     }
 
-    printf("NULL");
+    prev->link = NULL;
+    free(temp);
+
+    display();
 }
 
+/* -------- DELETE POSITION -------- */
 void deletePosition()
 {
     struct node *temp, *prev;
     int p, i;
 
-    printf("Enter Position : ");
+    printf("Enter position : ");
     scanf("%d", &p);
 
     if (first == NULL)
     {
-        printf("Linked List is Empty.");
+        printf("List is Empty");
+        return;
     }
-    else if (p == 1)
+
+    temp = first;
+
+    if (p == 1)
     {
-        temp = first;
         first = first->link;
         free(temp);
-    }
-    else
-    {
-        temp = first;
-
-        for (i = 1; i < p; i++)
-        {
-            prev = temp;
-            temp = temp->link;
-
-            if (temp == NULL)
-            {
-                printf("Invalid Position.");
-                return;
-            }
-        }
-
-        prev->link = temp->link;
-        free(temp);
+        display();
+        return;
     }
 
-    temp = first;
-    while (temp != NULL)
+    for (i = 1; i < p; i++)
     {
-        printf("%d -> ", temp->info);
+        prev = temp;
         temp = temp->link;
+
+        if (temp == NULL)
+        {
+            printf("Invalid Position");
+            return;
+        }
     }
 
-    printf("NULL");
+    prev->link = temp->link;
+    free(temp);
+
+    display();
 }
 
+/* -------- COUNT NODES -------- */
 void countNode()
 {
-    struct node *temp;
+    struct node *temp = first;
     int count = 0;
-
-    temp = first;
 
     while (temp != NULL)
     {
@@ -260,69 +227,60 @@ void countNode()
         temp = temp->link;
     }
 
-    printf("Total Nodes = %d\n", count);
+    printf("Total Nodes = %d", count);
 }
 
-void main()
+/* -------- MAIN FUNCTION -------- */
+int main()
 {
     int ch = 0;
 
-    while (ch != 9)
+    while (1)
     {
-        printf("Chooce any one \n")
-            printf("1. Create Node \n");
-        printf("2. Display \n");
-        printf("3. Insert At First \n");
-        printf("4. Delete First \n");
-        printf("5. Insert At Last \n");
-        printf("6. Delete Last \n");
-        printf("7. Delete Position \n");
-        printf("8. Count Nodes \n");
-        printf("9. Exit \n");
+        printf("\n----- MENU -----");
+        printf("\n1. Create List");
+        printf("\n2. Display");
+        printf("\n3. Insert First");
+        printf("\n4. Insert Last");
+        printf("\n5. Delete First");
+        printf("\n6. Delete Last");
+        printf("\n7. Delete Position");
+        printf("\n8. Count Nodes");
+        printf("\n9. Exit");
 
-        printf("Enter Your Choice : ");
+        printf("\nEnter choice : ");
         scanf("%d", &ch);
 
         switch (ch)
         {
         case 1:
-            creatNode();
+            createList();
             break;
-
         case 2:
             display();
             break;
-
         case 3:
-            insertAtFriest();
+            insertFirst();
             break;
-
         case 4:
+            insertLast();
+            break;
+        case 5:
             deleteFirst();
             break;
-
-        case 5:
-            insertAtLast();
-            break;
-
         case 6:
             deleteLast();
             break;
-
         case 7:
             deletePosition();
             break;
-
         case 8:
             countNode();
             break;
-
         case 9:
-            printf("Program End.");
-            break;
-
+            exit(0);
         default:
-            printf("Invalid Choice.");
+            printf("Invalid Choice");
         }
     }
 }
