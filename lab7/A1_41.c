@@ -1,6 +1,3 @@
-// 41. Write a program to implement a node structure for singly linked list. Read the 
-// data in a node, print the node.
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,14 +6,15 @@ struct node
     int info;
     struct node *link;
 };
-void creatNode(){
-        struct node *first, *newnode, *temp;
+
+// Create Node Function
+struct node *createNode(struct node *first)
+{
+    struct node *newnode, *save;
     int n, i;
 
     printf("Enter number of nodes : ");
     scanf("%d", &n);
-
-    first = NULL;
 
     for(i = 1; i <= n; i++)
     {
@@ -33,30 +31,49 @@ void creatNode(){
         }
         else
         {
-            temp = first;
+            save = first;
 
-            while(temp->link != NULL)
+            while(save->link != NULL)
             {
-                temp = temp->link;
+                save = save->link;
             }
 
-            temp->link = newnode;
+            save->link = newnode;
         }
     }
 
+    return first;
+}
+
+// Display Function
+void displayNode(struct node *first)
+{
+    struct node *save;
+
+    if(first == NULL)
+    {
+        printf("Linked List is Empty.");
+        return;
+    }
+
+    save = first;
+
     printf("Linked List : ");
 
-    temp = first;
-
-    while(temp != NULL)
+    while(save != NULL)
     {
-        printf("%d -> ", temp->info);
-        temp = temp->link;
+        printf("%d -> ", save->info);
+        save = save->link;
     }
 
     printf("NULL");
 }
+
 void main()
 {
-    creatNode();
+    struct node *first = NULL;
+
+    first = createNode(first);
+
+    displayNode(first);
 }
