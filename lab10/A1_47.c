@@ -1,9 +1,7 @@
-// 44. Write a program to remove the duplicates nodes from given sorted Linked List. 
-//  Input: 1 → 1 → 6 → 13 → 13 → 13 → 27 → 27 
-//  Output: 1 → 6 → 13 → 27
+// 47. Write a program to sort elements of a linked list. 
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 
 struct node
 {
@@ -44,6 +42,25 @@ struct node* createNode(int n)
     return first;
 }
 
+void dispalyLinkedlist(struct node *first)
+{
+    struct node *temp = first;
+
+    if(temp == NULL)
+    {
+        printf("Linked list is empty !");
+        return;
+    }
+
+    while(temp != NULL)
+    {
+        printf("%d -> ", temp->info);
+        temp = temp->link;
+    }
+
+    printf("NULL");
+}
+
 void main(){
     
     struct node *first = NULL;
@@ -54,28 +71,20 @@ void main(){
     first = createNode(n);
 
     struct node *temp = first;
-
-    while(temp != NULL && temp->link != NULL)
+    for(int i = 0; i < n; i++)
     {
-        if(temp->info == temp->link->info)
+        struct node *temp1 = temp->link;
+        for(int j = i + 1; j < n; j++)
         {
-            struct node *duplicate = temp->link;
-            temp->link = temp->link->link;
-            free(duplicate);
+            if(temp->info > temp1->info)
+            {
+                int t = temp->info;
+                temp->info = temp1->info;
+                temp1->info = t;
+            }
+            temp1 = temp1->link;
         }
-        else
-        {
-            temp = temp->link;
-        }
-    }
-
-    // Display the linked list after removing duplicates
-    temp = first;
-    printf("Linked list after removing duplicates: ");
-    while(temp != NULL)
-    {
-        printf("%d -> ", temp->info);
         temp = temp->link;
     }
-    printf("NULL");
+    dispalyLinkedlist(first);
 }

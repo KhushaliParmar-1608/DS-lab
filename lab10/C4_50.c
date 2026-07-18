@@ -1,5 +1,7 @@
-// 41. Write a program to implement a node structure for singly linked list. Read the 
-// data in a node, print the node. 
+// 50. Write a program to swap two consecutive nodes in the linked list. Don’t change 
+// the values of nodes, implement by changing the link of the nodes. 
+//  Input: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 
+//  Output: 2 → 1 → 4 → 3 → 6 → 5 → 8 → 7
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,16 +64,54 @@ void dispalyLinkedlist(struct node *first)
     printf("NULL");
 }
 
+struct node* swapNode(struct node *first)
+{
+    struct node *prev = NULL;
+    struct node *curr = first;
+    struct node *next;
+
+    if(first == NULL || first->link == NULL)
+    {
+        return first;
+    }
+
+    first = first->link;
+
+    while(curr != NULL && curr->link != NULL)
+    {
+        next = curr->link;
+
+        curr->link = next->link;
+        next->link = curr;
+
+        if(prev != NULL)
+        {
+            prev->link = next;
+        }
+
+        prev = curr;
+        curr = curr->link;
+    }
+
+    return first;
+}
+
 int main()
 {
-    struct node *first = NULL;
     int n;
+    struct node *first = NULL;
 
-    printf("Enter the number of node : ");
+    printf("Enter the number of nodes : ");
     scanf("%d", &n);
 
     first = createNode(n);
 
+    printf("Linked list before swapping : ");
+    dispalyLinkedlist(first);
+
+    first = swapNode(first);
+
+    printf("\nLinked list after swapping : ");
     dispalyLinkedlist(first);
 
     return 0;

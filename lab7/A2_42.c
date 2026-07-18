@@ -1,3 +1,13 @@
+// 42. Write a menu driven program to implement following operations on the singly 
+// linked list.  
+//  Insert a node at the front of the linked list. 
+//  Display all nodes. 
+//  Delete a first node of the linked list. 
+//  Insert a node at the end of the linked list. 
+//  Delete a last node of the linked list. 
+//  Delete a node from specified position. 
+//  Count the no. of nodes in the linked list. 
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,43 +17,52 @@ struct node
     struct node *link;
 };
 
-struct node *first = NULL;
-
-struct node *createNode()
+//create a linked list
+struct node* createNode(int n)
 {
-    struct node *newnode;
-    int x;
+    struct node *new, *save, *first = NULL;
 
-    newnode = (struct node *)malloc(sizeof(struct node));
-
-    if (newnode == NULL)
+    if(n <= 0)
     {
-        printf("Memory not allocated");
-        exit(0);
+        return NULL;
     }
 
-    printf("Enter info : ");
-    scanf("%d", &x);
+    for(int i = 1; i <= n; i++)
+    {
+        new = (struct node *)malloc(sizeof(struct node));
 
-    newnode->info = x;
-    newnode->link = NULL;
+        printf("Enter the info part of node : ");
+        scanf("%d", &new->info);
 
-    return newnode;
+        new->link = NULL;
+
+        if(first == NULL)
+        {
+            first = new;
+            save = new;
+        }
+        else
+        {
+            save->link = new;
+            save = new;
+        }
+    }
+
+    return first;
 }
 
-void display()
+//display the linked list
+void dispalyLinkedlist(struct node *first)
 {
     struct node *temp = first;
 
-    if (temp == NULL)
+    if(temp == NULL)
     {
-        printf("List is Empty");
+        printf("Linked list is empty !");
         return;
     }
 
-    printf("Linked List : ");
-
-    while (temp != NULL)
+    while(temp != NULL)
     {
         printf("%d -> ", temp->info);
         temp = temp->link;
@@ -52,115 +71,49 @@ void display()
     printf("NULL");
 }
 
-/* -------- CREATE LIST -------- */
-void createList()
+//insert a node at the front of the linked list
+void insertAtFrist(struct node *first, int x)
 {
-    int n, i;
-    struct node *newnode, *temp;
+    struct node *new = (struct node *)malloc(sizeof(struct node));
 
-    printf("Enter number of nodes : ");
-    scanf("%d", &n);
+    new->info = x;
+    new->link = first;
+    new = first;
 
-    for (i = 1; i <= n; i++)
-    {
-        newnode = createNode();
-
-        if (first == NULL)
-        {
-            first = newnode;
-        }
-        else
-        {
-            temp = first;
-
-            while (temp->link != NULL)
-            {
-                temp = temp->link;
-            }
-
-            temp->link = newnode;
-        }
-    }
-
-    display();
 }
 
-/* -------- INSERT FIRST -------- */
-void insertFirst()
+//delete a first node of the linked list
+void deleteFirstNode(struct node *first)
 {
-    struct node *newnode = createNode();
-
-    newnode->link = first;
-    first = newnode;
-
-    display();
-}
-
-/* -------- INSERT LAST -------- */
-void insertLast()
-{
-    struct node *newnode = createNode();
-    struct node *temp;
-
-    if (first == NULL)
-    {
-        first = newnode;
-    }
-    else
-    {
-        temp = first;
-
-        while (temp->link != NULL)
-        {
-            temp = temp->link;
-        }
-
-        temp->link = newnode;
-    }
-
-    display();
-}
-
-/* -------- DELETE FIRST -------- */
-void deleteFirst()
-{
-    struct node *temp;
-
-    if (first == NULL)
-    {
-        printf("List is Empty");
-        return;
-    }
-
-    temp = first;
+    struct node *temp = first;
     first = first->link;
     free(temp);
-
-    display();
 }
 
-/* -------- DELETE LAST -------- */
-void deleteLast()
+//insert a node at the end of the linked list
+void insertAtEnd(struct node *first, int x)
 {
-    struct node *temp, *prev;
+    struct node *new = (struct node *)malloc(sizeof(struct node));
+    struct node *temp = first;
 
-    if (first == NULL)
+    new->info = x;
+    new->link = NULL;
+
+    while(temp->link != NULL)
     {
-        printf("List is Empty");
-        return;
+        temp = temp->link;
     }
 
-    if (first->link == NULL)
-    {
-        free(first);
-        first = NULL;
-        display();
-        return;
-    }
+    temp->link = new;
+}
 
-    temp = first;
+//delete a last node of the linked list
+void deleteLastNode(struct node *first)
+{
+    struct node *temp = first;
+    struct node *prev = NULL;
 
-    while (temp->link != NULL)
+    while(temp->link != NULL)
     {
         prev = temp;
         temp = temp->link;
@@ -168,119 +121,90 @@ void deleteLast()
 
     prev->link = NULL;
     free(temp);
-
-    display();
 }
 
-/* -------- DELETE POSITION -------- */
-void deletePosition()
+//delete a node from specified position
+void deleteNodeAtPosition(struct node *first, int pos)
 {
-    struct node *temp, *prev;
-    int p, i;
+    struct node *temp = first;
+    struct node *prev = NULL;
 
-    printf("Enter position : ");
-    scanf("%d", &p);
-
-    if (first == NULL)
-    {
-        printf("List is Empty");
-        return;
-    }
-
-    temp = first;
-
-    if (p == 1)
+    if(pos == 1)
     {
         first = first->link;
         free(temp);
-        display();
         return;
     }
 
-    for (i = 1; i < p; i++)
+    for(int i = 1; i < pos; i++)
     {
         prev = temp;
         temp = temp->link;
-
-        if (temp == NULL)
-        {
-            printf("Invalid Position");
-            return;
-        }
     }
 
     prev->link = temp->link;
     free(temp);
-
-    display();
 }
-
-/* -------- COUNT NODES -------- */
-void countNode()
-{
-    struct node *temp = first;
-    int count = 0;
-
-    while (temp != NULL)
-    {
-        count++;
-        temp = temp->link;
-    }
-
-    printf("Total Nodes = %d", count);
-}
-
-/* -------- MAIN FUNCTION -------- */
 int main()
 {
-    int ch = 0;
+    struct node *first = NULL;
+    int n;
+    printf("Enter the number of nodes you want to create : ");
+    scanf("%d", &n);
 
-    while (1)
+    int choice, x, pos;
+    first = createNode(n);
+    printf("Enter your choice : \n1. Insert a node at the front of the linked list. \n2. Display all nodes. \n3. Delete a first node of the linked list. \n4. Insert a node at the end of the linked list. \n5. Delete a last node of the linked list. \n6. Delete a node from specified position. \n7. Count the no. of nodes in the linked list.\n");
+    scanf("%d", &choice);
+
+    if(choice == 1)
     {
-        printf("\n----- MENU -----");
-        printf("\n1. Create List");
-        printf("\n2. Display");
-        printf("\n3. Insert First");
-        printf("\n4. Insert Last");
-        printf("\n5. Delete First");
-        printf("\n6. Delete Last");
-        printf("\n7. Delete Position");
-        printf("\n8. Count Nodes");
-        printf("\n9. Exit");
-
-        printf("\nEnter choice : ");
-        scanf("%d", &ch);
-
-        switch (ch)
+        printf("Enter the value you want to insert at the front : ");
+        scanf("%d", &x);
+        insertAtFrist(first, x);
+        printf("Node inserted at the front successfully !");
+    }
+    else if(choice == 2)
+    {
+        dispalyLinkedlist(first);
+    }
+    else if(choice == 3)
+    {
+        deleteFirstNode(first);
+        printf("First node deleted successfully !");
+    }
+    else if(choice == 4)
+    {
+        printf("Enter the value you want to insert at the end : ");
+        scanf("%d", &x);
+        insertAtEnd(first, x);
+        printf("Node inserted at the end successfully !");
+    }
+    else if(choice == 5)
+    {
+        deleteLastNode(first);
+        printf("Last node deleted successfully !");
+    }
+    else if(choice == 6)
+    {
+        printf("Enter the position of node you want to delete : ");
+        scanf("%d", &pos);
+        deleteNodeAtPosition(first, pos);
+        printf("Node deleted from the specified position successfully !");
+    }
+    else if(choice == 7)
+    {
+        int count = 0;
+        struct node *temp = first;
+        while(temp != NULL)
         {
-        case 1:
-            createList();
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            insertFirst();
-            break;
-        case 4:
-            insertLast();
-            break;
-        case 5:
-            deleteFirst();
-            break;
-        case 6:
-            deleteLast();
-            break;
-        case 7:
-            deletePosition();
-            break;
-        case 8:
-            countNode();
-            break;
-        case 9:
-            exit(0);
-        default:
-            printf("Invalid Choice");
+            count++;
+            temp = temp->link;
         }
+        printf("Number of nodes in the linked list : %d", count);
+    }
+    else
+    {
+        printf("Invalid choice !");
     }
 }

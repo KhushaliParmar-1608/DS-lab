@@ -16,9 +16,9 @@ void main()
     minute = second /60;
     second = second % 60;
 
-    print("hours : %d" , hour);
-    print("minutes : %d" , minute);
-    print("seconds : %d" , second);
+    printf("hours : %d \n" , hour);
+    printf("minutes : %d \n" , minute);
+    printf("seconds : %d \n" , second);
 
 
 }
